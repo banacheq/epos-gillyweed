@@ -1,0 +1,264 @@
+function onEdit(e) {
+  handleEdit(e)
+}
+
+function handleEdit(e)
+{
+  var oldValue;
+  var newValue;
+  var ss=SpreadsheetApp.getActiveSpreadsheet();
+  var activeCell = ss.getActiveCell();
+  console.log(activeCell.getA1Notation());
+  if(activeCell.getColumn() == 2 && ss.getActiveSheet().getName()=="Products") {
+    newValue=e.value;
+    oldValue=e.oldValue;
+    if(!e.value) {
+      activeCell.setValue("");
+    }
+    else {
+      const re = new RegExp(newValue + ':?([0-9]*)');
+      const match = oldValue.match(re);
+
+      if( match == null )
+      {
+        activeCell.setValue(oldValue+', '+newValue);
+      }
+      else 
+      {
+        var quantity = Number(match[1])+1;
+        if( quantity == 1 )
+        {
+          quantity = 2;
+        }
+        var replaceValue = oldValue;
+      
+        replaceValue = oldValue.replace( match[0], newValue + ":" + Number(quantity) );
+        finalResult = replaceValue;
+        activeCell.setValue(finalResult);
+
+        /*var quantity = Number(match[1])+1;
+        //replaceValue.replace( match[0], newValue + ":" + (quantity + 1) );
+        activeCell.setValue(oldValue.replace( match[0], newValue + ":" + (quantity + 1) ));*/
+      }
+    }
+  }
+  else if( activeCell.getA1Notation() == "C1" && ss.getActiveSheet().getName()=="Functions" )
+  {
+    console.log("Function Selection");
+    createOrder();
+    activeCell.setValue("Select Function Here");
+  }
+}
+
+function getRole()
+{
+  return PropertiesService.getUserProperties().getProperty("ROLE");
+}
+
+function setRole()
+{
+  var result = SpreadsheetApp.getUi().prompt("Please enter your role");
+  
+  //Get the button that the user pressed.
+  var button = result.getSelectedButton();
+  
+  if (button === SpreadsheetApp.getUi().Button.OK) {
+    if( isValidRole( result.getResponseText() ) )
+    {
+      PropertiesService.getUserProperties().setProperty("ROLE", result.getResponseText());
+    }
+    else
+    {
+      SpreadsheetApp.getUi().alert("\"" + result.getResponseText() + "\" is not a valid role, see Staff sheet." );
+    }
+  }
+}
+
+function isValidRole( roleName )
+{
+  var valid = false;
+  var roles = SpreadsheetApp.getActiveSpreadsheet().getRangeByName("StaffNames");
+  if( roles )
+  {
+    for( var rowIndex = roles.getRow(), relRowIndex = 1; rowIndex <= roles.getLastRow(); ++rowIndex, ++relRowIndex )
+    {
+      var cell = roles.getCell( relRowIndex, 1 );
+      if( cell.isBlank() ) { break; }
+      if( cell.getValue().toString() == roleName ) { return true; }
+    }
+  }
+
+  return valid;
+}
+
+function clearRole()
+{
+  PropertiesService.getUserProperties().setProperty("ROLE", "Unassigned");
+}
+
+function showRole()
+{
+  SpreadsheetApp.getUi().alert("Current Role: " + getRole() );
+}
+
+function onOpen() {
+  var menu = SpreadsheetApp.getUi().createMenu("Order");
+
+  menu.addItem("Create Order", "createOrder")
+    .addSeparator();
+    
+  var selectedRole = getRole();
+  if( selectedRole == null )
+  {
+    selectedRole = "Unassigned";
+    PropertiesService.getUserProperties().setProperty("ROLE", selectedRole);
+  }
+
+  var staffMenu = SpreadsheetApp.getUi().createMenu("Staff");
+  staffMenu.addItem("Show Current Role", "showRole" );
+  staffMenu.addItem("Change Role", "setRole" );
+  staffMenu.addItem("Clear Role", "clearRole");
+
+  menu.addSubMenu(staffMenu)
+    .addSeparator()
+    .addItem("Export Standalone Order Form", "exportStandaloneOrderForm")
+    .addToUi();
+}
+
+function parseIngredients(ingredientsValue)
+{
+  var ingredientList = [];
+
+  if( ingredientsValue != "")
+  {
+    var ingredientSplits = ingredientsValue.split(", ");
+    ingredientSplits.forEach( 
+      function (ing)
+      {
+        if( ing.indexOf(":") == -1 )
+        {
+          ingredientList.push( { "name": ing, "qty": 1 } );
+        }
+        else
+        {
+          qtySplits = ing.split(":");
+          ingredientList.push( { "name": qtySplits[0], "qty": Number(qtySplits[1]) } );
+        }
+      } );
+  }
+
+  return ingredientList;
+}
+
+function getProducts()
+{
+  var products = [];
+  var productRange = SpreadsheetApp.getActiveSpreadsheet().getRangeByName("Products");
+  if( productRange )
+  {
+    var valueGrid = productRange.getValues();
+    for( var rowIndex=0; rowIndex < valueGrid.length; ++rowIndex )
+    {
+      if( valueGrid[rowIndex][0] == "" ) { break; }
+      products.push( { "name": valueGrid[rowIndex][0], "ingredients": parseIngredients(valueGrid[rowIndex][1]), "cost": Number(valueGrid[rowIndex][2]), "rrp": Number(valueGrid[rowIndex][3]) } );
+    }
+  }
+
+  return products;
+}
+
+function getIngredients()
+{
+  var ingredients = [];
+  var ingredientRange = SpreadsheetApp.getActiveSpreadsheet().getRangeByName("Ingredients");
+  if( ingredientRange )
+  {
+    var valueGrid = ingredientRange.getValues();
+    for( var rowIndex=0; rowIndex < valueGrid.length; ++rowIndex )
+    {
+      if( valueGrid[rowIndex][0] == "" ) { break; }
+      ingredients.push( { "name": valueGrid[rowIndex][0], "cost": Number(valueGrid[rowIndex][1]) } );
+    }
+  }
+
+  return ingredients;
+}
+
+function getTax()
+{
+  var taxRange = SpreadsheetApp.getActiveSpreadsheet().getRangeByName("TaxRate");
+  if( taxRange )
+  {
+    var taxCell = taxRange.getCell(1,1);
+    if( !taxCell.isBlank() )
+    {
+      return Number(taxCell.getValue());
+    }
+  }
+
+  return 0
+}
+
+function instantiateTemplate(filename, allowSubmit)
+{
+  var template = HtmlService.createTemplateFromFile(filename);
+  template.ingredientsDataFromServer = getIngredients();
+  console.log(JSON.stringify(template.ingredientsDataFromServer));
+  template.productsDataFromServer = getProducts();
+  console.log(JSON.stringify(template.productsDataFromServer));
+  template.taxRateFromServer = getTax();
+  console.log(JSON.stringify(template.taxRateFromServer));
+  if( allowSubmit )
+  {
+    template.submitOrder="google.script.run.withSuccessHandler(function(){ google.script.host.close(); }).submitOrder(_order);";
+    template.confirmButton = "<div class=\"col\"><button class=\"btn btn-outline-success\" onclick=\"confirmOrder()\" >Confirm</button></div>";
+  }
+  else
+  {
+    template.submitOrder="";
+    template.confirmButton = "<div class=\"col\">Orders can only be submitted via Spreadsheet form</div>";
+  }
+  return template.evaluate();
+}
+
+function createOrder() {
+  var widget = instantiateTemplate("Order.html", true);
+  widget.setWidth(1000);
+  widget.setHeight(500);
+  SpreadsheetApp.getUi().showModalDialog(widget, 'Create Order');
+}
+
+function exportTemplateAsDownload(filename)
+{
+  // Passing false here disables the templated code that allows the submission of orders to the spreadsheet
+  var htmlOutput = instantiateTemplate(filename, false);
+  ContentService.createTextOutput( htmlOutput.getContent() ).downloadAsFile(filename);
+}
+
+function exportStandaloneOrderForm()
+{
+  var file = DriveApp.createFile( "Order.html", instantiateTemplate("Order.html", false).getContent() );
+  var htmlOutput = HtmlService
+    .createHtmlOutput("<p><a href=\""+ file.getDownloadUrl() +"\">Download</a></p>")
+    .setTitle('Download');
+  SpreadsheetApp.getUi().showSidebar(htmlOutput);
+}
+
+function submitOrder(order)
+{
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Orders");
+  var orderId = new Date().valueOf();
+  var products = order.products.map( (product) => product.product.name + ":" + product.qty ).join(", ");
+  console.log("Order submitted: " + orderId + products + order.cost + order.rrp + order.charge );
+  sheet.appendRow([orderId, new Date(), getRole(), products, order.cost, order.rrp, order.charge, order.tax, order.net]);
+}
+
+function doGet(e)
+{
+  var exportType = e.parameter.exportType;
+  if( exportType == "order" )
+  {
+    exportTemplateAsDownload("Order.html");
+  }
+
+}

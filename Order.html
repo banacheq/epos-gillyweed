@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
+        <script>
+            var _products = <?!= JSON.stringify(productsDataFromServer) ?>;//[
+            //    { "name":"Midnight Run", "ingredients":[ {"name":"Coffee Beans","qty":1} ], "cost":0, "rrp":20 },
+            //    { 
+            //        "name":"Pale Imitation", 
+            //        "ingredients":[ 
+            //            {"name":"Coffee Beans","qty":2},
+            //            {"name":"Milk","qty":1},
+            //            {"name":"Liquid Whitener","qty":2},
+            //        ], 
+            //        "cost":0, 
+            //        "rrp":20 
+            //    },
+            //    { 
+            //        "name":"Whiter Shade of Pale", 
+            //        "ingredients":[ 
+            //            {"name":"Coffee Beans","qty":2},
+            //            {"name":"Milk","qty":3},
+            //            {"name":"Liquid Whitener","qty":2},
+            //        ], 
+            //        "cost":0, 
+            //        "rrp":20 
+            //    },
+            //    { "name":"Speedball", "ingredients":[], "cost":10, "rrp":15 },
+            //    { "name":"Frosted Cronut", "ingredients":[], "cost":10, "rrp":15 },
+            //]
+
+            //var _ingredients = [
+                //{ "name":"Coffee Beans", "cost": 0 },
+                //{ "name":"Milk", "cost": 0 },
+                //{ "name":"Liquid Whitener", "cost": 0 },
+            //]
+            var _ingredients = <?!= JSON.stringify(ingredientsDataFromServer) ?>;
+            var _taxRate = <?!= JSON.stringify(taxRateFromServer) ?>;
+
+            var _order = {
+                "products": [],
+                "ingredients": [],
+                "cost":0,
+                "rrp":0,
+                "charge":0,
+                "tax":0,
+                "net":0
+            }
+
+            function calculateIngredientsCosts(ingredients)
+            {
+                var cost = 0;
+                ingredients.forEach( ingredient => {
+                    var found = _ingredients.find( (ing) => { return (ing.name == ingredient.name); } )
+                    cost += found.cost * ingredient.qty;
+                } );
+                return cost;
+            }
+
+            function calculateOrder()
+            {
+                var cumulativeCost = 0;
+                var cumulativeRrp = 0;
+                for( var i=0; i < _order.products.length; ++i )
+                {
+                    cumulativeCost += calculateIngredientsCosts(_order.products[i].product.ingredients);
+                    cumulativeCost += _order.products[i].product.cost * _order.products[i].qty;
+                    cumulativeRrp += _order.products[i].product.rrp * _order.products[i].qty;
+                }
+
+                _order.cost = cumulativeCost;
+                _order.rrp = cumulativeRrp;
+            }
+
+            function removeFromOrder(productIndex)
+            {
+                _order.products.splice(productIndex,1);
+                updateOrder();
+            }
+
+            function regenerateOrderList(order)
+            {
+                var orderList = document.getElementById("orderList");
+                while (orderList.lastElementChild) {
+                    orderList.removeChild(orderList.lastElementChild);
+                }
+                
+                for( var i = 0; i < order.products.length; ++i )
+                {
+                    var rowDiv = document.createElement("div");
+                    rowDiv.className = "row";
+                    orderList.appendChild(rowDiv);
+
+                    var nameDiv = document.createElement("div");
+                    nameDiv.className = "col";
+                    nameDiv.textContent = order.products[i].product.name;
+                    rowDiv.appendChild(nameDiv);
+
+                    var qtyDiv = document.createElement("div");
+                    qtyDiv.className = "col-sm";
+                    qtyDiv.innerText = order.products[i].qty;
+                    rowDiv.appendChild(qtyDiv);
+
+                    var deleteDiv = document.createElement("div");
+                    deleteDiv.className = "col-sm";
+                    var button = document.createElement("button");
+                    button.textContent = "Remove";
+                    button.classList.add("btn", "btn-outline-danger");
+                    button.value = i;
+                    button.onclick = function() { removeFromOrder(this.value); };
+                    deleteDiv.appendChild(button);
+                    rowDiv.appendChild(deleteDiv); 
+                }
+            }
+
+            function regenerateIngredientsList(order)
+            {
+                var ingredientsList = document.getElementById("ingredientsList");
+                while (ingredientsList.lastElementChild) {
+                    ingredientsList.removeChild(ingredientsList.lastElementChild);
+                }
+                
+                for( var i = 0; i < order.ingredients.length; ++i )
+                {
+                    var rowDiv = document.createElement("div");
+                    rowDiv.className = "row";
+                    ingredientsList.appendChild(rowDiv);
+
+                    var nameDiv = document.createElement("div");
+                    nameDiv.className = "col";
+                    nameDiv.textContent = order.ingredients[i].name;
+                    rowDiv.appendChild(nameDiv);
+
+                    var qtyDiv = document.createElement("div");
+                    qtyDiv.className = "col-sm";
+                    qtyDiv.innerText = order.ingredients[i].qty;
+                    rowDiv.appendChild(qtyDiv);
+                }
+            }
+
+            function addItem()
+            {
+                var productSelection = document.getElementById("productSelection").value;
+                if( productSelection == "Select Product" ) { return; }
+                var productIndex = Number(productSelection);
+                var productQuantity = Number(document.getElementById("productQuantity").value);
+                if( productQuantity <= 0 ) { return; }
+                var itemToAdd = { "product": _products[productIndex], "qty":productQuantity }
+
+                // Test if the item is already in the list of products
+                //var foundIndex = _order.products.findIndex( item => (item.product.name == _products[productIndex].name) );
+                //if( foundIndex < 0 )
+                //{
+                //  // Item was not found, just add it
+                  _order.products.push( itemToAdd );
+                //}
+                //else
+                //{
+                //  _order.products[foundIndex].qty += productQuantity;
+                //}
+
+                updateOrder();
+            }
+
+            function updateIngredientsList()
+            {
+                _order.ingredients = [];
+
+                for(var productIndex=0; productIndex < _order.products.length; ++productIndex)
+                {
+                    var product = _order.products[productIndex].product;
+                    var qty = _order.products[productIndex].qty;
+
+                    for(var ingIndex = 0; ingIndex < product.ingredients.length; ++ingIndex)
+                    {
+                        var ingredient = product.ingredients[ingIndex];
+                        var foundIndex = _order.ingredients.findIndex( (ing) => { return ing.name == ingredient.name; } );
+                        if( foundIndex >= 0 )
+                        {
+                            _order.ingredients[foundIndex].qty += ingredient.qty * qty;
+                        }
+                        else
+                        {
+                            _order.ingredients.push( { "name": ingredient.name, "qty": ingredient.qty * qty  } );
+                        }
+                    }
+                }
+            }
+
+            function updateOrderDetails(order)
+            {
+                document.getElementById("orderCost").innerHTML = order.cost;
+                document.getElementById("orderRrp").innerHTML = order.rrp;
+                document.getElementById("orderCharge").value = order.rrp;
+            }
+
+            function updateOrder()
+            {
+                updateIngredientsList();
+                calculateOrder();
+                regenerateOrderList(_order);
+                regenerateIngredientsList(_order);
+                updateOrderDetails(_order);
+            }
+
+            function addProductSelection(products)
+            {
+                var selection = document.getElementById("productSelection");
+
+                for( var i=0; i < products.length; ++i )
+                {
+                    var option = document.createElement("option");
+                    option.textContent = products[i].name;
+                    option.value = i;
+                    selection.appendChild(option);
+                }
+            }
+
+            function confirmOrder()
+            {
+              if( _order.products.length > 0 )
+              {
+                _order.charge = document.getElementById("orderCharge").value;
+                _order.tax = Math.floor(_taxRate * _order.charge);
+                _order.net = _order.charge - _order.tax;
+                //google.script.run.withSuccessHandler(function(){ google.script.host.close(); }).submitOrder(_order);
+                <?!= submitOrder ?>
+              }
+              else
+              {
+                alert("No items in order, please add items or cancel")
+              }
+            }
+
+            function onLoad()
+            {
+              addProductSelection(_products);
+            }
+        </script>
+  </head>
+    <body onload="onLoad()">
+        <div class="container border">
+            <!-- Input group -->
+            <div class="row">
+                <div class="col-lg">
+                    <select class="form-select" id="productSelection" aria-label="Product Selection">
+                        <option selected>Select Product</option>
+                    </select>
+                </div>
+                <div class="col-sm"><input type="number" id="productQuantity" name="productQuantity" min="1" /></div>
+                <div class="col-sm"><button class="btn btn-outline-secondary" type="button" onClick="addItem()">Add</button></div>
+            </div>
+
+            <!-- Order Contents -->
+            <div class="row">Order Contents:</div>
+            <div class="container border">
+                <div class="row" id="orderList"></div>
+            </div>
+
+            <!-- Bottom Half -->
+            <div class="row">
+                <!-- Ingredients List -->
+                <div class="col">
+                    <div class="row">Ingredients Required:</div>
+                    <div class="container border" id="ingredientsList"></div>
+                </div>
+
+                <!-- Order Details -->
+                <div class="col border">
+                    <div class="row"><div class="col">Cost: </div><div class="col" id="orderCost"></div></div>
+                    <div class="row"><div class="col">RRP: </div><div class="col" id="orderRrp"></div></div>
+                    <div class="row"><div class="col">Charge: </div><div class="col"><input type="number" id="orderCharge" min="0" /></div></div>
+                    <div class="row">
+                        <?!= confirmButton ?>
+                        <!--<div class="col"><button class="btn btn-outline-success" onclick="confirmOrder()" >Confirm</button></div>-->
+                        <!--<div class="col"><button class="btn btn-outline-danger" onclick="cancelOrder()">Cancel</button></div></div>-->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
