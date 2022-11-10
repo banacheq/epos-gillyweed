@@ -80,6 +80,21 @@
                 updateOrder();
             }
 
+            function getOrderItemQtyId(productName)
+            {
+                return productName + " order_qty";
+            }
+
+            function changeOrderItemQuantity( productName, newQty )
+            {
+                // Test if the item is already in the list of products
+                var foundItem = _order.products.find( item => (item.product.name == productName) );
+                if( foundItem ) {
+                    foundItem.qty = Number(newQty);
+                    updateOrder();
+                }
+            }
+
             function regenerateOrderList(order)
             {
                 var orderList = document.getElementById("orderList");
@@ -100,7 +115,15 @@
 
                     var qtyDiv = document.createElement("div");
                     qtyDiv.className = "col-sm";
-                    qtyDiv.innerText = order.products[i].qty;
+                    
+                    var qtyInput = document.createElement("input");
+                    qtyInput.setAttribute("type", "number");
+                    qtyInput.id = getOrderItemQtyId(order.products[i].product.name);
+                    qtyInput.name = order.products[i].product.name;
+                    qtyInput.value = Number(order.products[i].qty);
+                    qtyInput.onchange = function(e) { changeOrderItemQuantity(e.target.name, Number(e.target.value)); }
+                    qtyDiv.appendChild(qtyInput);
+                    //qtyDiv.innerText = order.products[i].qty;
                     rowDiv.appendChild(qtyDiv);
 
                     var deleteDiv = document.createElement("div");
@@ -233,47 +256,94 @@
               }
             }
 
+            function addItemByName(productName)
+            {
+                var foundProduct = _products.find( item => item.name == productName )
+                if( foundProduct == null ) {
+                    return;
+                }
+
+                var productQuantity = 1;
+                var itemToAdd = { "product": foundProduct, "qty":productQuantity }
+
+                // Test if the item is already in the list of products
+                var foundIndex = _order.products.findIndex( item => (item.product.name == foundProduct.name) );
+                if( foundIndex < 0 ) {
+                    // Item was not found, just add it
+                    _order.products.push( itemToAdd );
+                }
+                else {
+                    _order.products[foundIndex].qty += productQuantity;
+                }
+                updateOrder();
+            }
+
+            function addProductSelectionGrid(products)
+            {
+                var selection = document.getElementById("productSelectionGrid");
+
+                for( var i=0; i < products.length; ++i )
+                {
+                    var option = document.createElement("button");
+                    option.classList.add("btn", "btn-outline-primary", "col");
+                    option.id = products[i].name;
+                    option.textContent = products[i].name;
+                    option.onclick = function(e) {
+                        addItemByName( e.target.id );
+                    }
+                    selection.appendChild(option);
+                }
+            }
+
             function onLoad()
             {
-              addProductSelection(_products);
+                addProductSelectionGrid(_products);
+                addProductSelection(_products);
             }
         </script>
   </head>
     <body onload="onLoad()">
         <div class="container border">
-            
             <div class="row">
-                <div class="col-lg">
-                    <select class="form-select" id="productSelection" aria-label="Product Selection">
-                        <option selected>Select Product</option>
-                    </select>
-                </div>
-                <div class="col-sm"><input type="number" id="productQuantity" name="productQuantity" min="1" /></div>
-                <div class="col-sm"><button class="btn btn-outline-secondary" type="button" onClick="addItem()">Add</button></div>
-            </div>
-
-            
-            <div class="row">Order Contents:</div>
-            <div class="container border">
-                <div class="row" id="orderList"></div>
-            </div>
-
-            
-            <div class="row">
-                
                 <div class="col">
-                    <div class="row">Ingredients Required:</div>
-                    <div class="container border" id="ingredientsList"></div>
+                    <div class="row" id="productSelectionGrid"></div>
                 </div>
 
-                
-                <div class="col border">
-                    <div class="row"><div class="col">Cost: </div><div class="col" id="orderCost"></div></div>
-                    <div class="row"><div class="col">RRP: </div><div class="col" id="orderRrp"></div></div>
-                    <div class="row"><div class="col">Charge: </div><div class="col"><input type="number" id="orderCharge" min="0" /></div></div>
+                <div class="col">
                     <div class="row">
-                        <div class="col">Orders can only be submitted via Spreadsheet form</div>                        
-                        
+                        <div class="col-lg">
+                            <select class="form-select" id="productSelection" aria-label="Product Selection">
+                                <option selected>Select Product</option>
+                            </select>
+                        </div>
+                        <div class="col-sm"><input type="number" id="productQuantity" name="productQuantity" min="1" /></div>
+                        <div class="col-sm"><button class="btn btn-outline-secondary" type="button" onClick="addItem()">Add</button></div>
+                    </div>
+
+                
+                    <div class="row">Order Contents:</div>
+                    <div class="container border">
+                        <div class="row" id="orderList"></div>
+                    </div>
+
+                
+                    <div class="row">
+                    
+                        <div class="col">
+                            <div class="row">Ingredients Required:</div>
+                            <div class="container border" id="ingredientsList"></div>
+                        </div>
+
+                    
+                        <div class="col border">
+                            <div class="row"><div class="col">Cost: </div><div class="col" id="orderCost"></div></div>
+                            <div class="row"><div class="col">RRP: </div><div class="col" id="orderRrp"></div></div>
+                            <div class="row"><div class="col">Charge: </div><div class="col"><input type="number" id="orderCharge" min="0" /></div></div>
+                            <div class="row">
+                                <div class="col">Orders can only be submitted via Spreadsheet form</div>                        
+                                
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
