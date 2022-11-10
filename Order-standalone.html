@@ -87,11 +87,22 @@
 
             function changeOrderItemQuantity( productName, newQty )
             {
-                // Test if the item is already in the list of products
-                var foundItem = _order.products.find( item => (item.product.name == productName) );
-                if( foundItem ) {
-                    foundItem.qty = Number(newQty);
-                    updateOrder();
+                if( newQty == 0 )
+                {
+                    var index = _order.products.findIndex( item => item.product.name == productName )
+                    if( index > -1 )
+                    {
+                        _order.products.splice(index, 1);
+                        updateOrder();
+                    }
+                }
+                else
+                {
+                    var foundItem = _order.products.find( item => (item.product.name == productName) );
+                    if( foundItem ) {                   
+                        foundItem.qty = Number(newQty);
+                        updateOrder();
+                    }
                 }
             }
 
