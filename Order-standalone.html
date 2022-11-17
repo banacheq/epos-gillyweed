@@ -3,39 +3,14 @@
   <head>
     <base target="_top">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+    <link href="style.css" rel="stylesheet">
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
         <script>
-            var _products = [{"name":"Midnight Run","ingredients":[{"name":"Coffee Beans","qty":1}],"cost":0,"rrp":10,"type":"Coffee"},{"name":"Pale Imitation","ingredients":[{"name":"Coffee Beans","qty":2},{"name":"Milk","qty":1},{"name":"Liquid Whitener","qty":1}],"cost":0,"rrp":15,"type":"Coffee"},{"name":"Whiter Shade of Pale","ingredients":[{"name":"Coffee Beans","qty":2},{"name":"Milk","qty":3},{"name":"Liquid Whitener","qty":2}],"cost":0,"rrp":15,"type":"Coffee"},{"name":"Mochary of Justice","ingredients":[{"name":"Coffee Beans","qty":2},{"name":"Milk","qty":1},{"name":"Cocoa Powder","qty":1}],"cost":0,"rrp":15,"type":"Coffee"},{"name":"Ex-presso","ingredients":[{"name":"Coffee Beans","qty":2},{"name":"Bottle of Water","qty":2}],"cost":0,"rrp":10,"type":"Coffee"},{"name":"Shot in the Dark","ingredients":[{"name":"Kopi Luwak Beans","qty":1},{"name":"Gunpowder","qty":1}],"cost":0,"rrp":25,"type":"Premium Coffee"},{"name":"Deja Brew","ingredients":[{"name":"Kopi Luwak Beans","qty":2},{"name":"Milk","qty":1},{"name":"Cocoa Powder","qty":1}],"cost":0,"rrp":25,"type":"Premium Coffee"},{"name":"Frighter Shade of Pale","ingredients":[{"name":"Coffee Beans","qty":2},{"name":"Milk","qty":1},{"name":"Pumpkin","qty":1}],"cost":0,"rrp":15,"type":"Coffee"},{"name":"Cold Catalyst","ingredients":[{"name":"Coffee Beans","qty":1},{"name":"Sugar","qty":1},{"name":"Bottle of Water","qty":1}],"cost":0,"rrp":10,"type":"Granita"},{"name":"You Do Yuzu","ingredients":[{"name":"Yuzu","qty":1},{"name":"Sugar","qty":1},{"name":"Bottle of Water","qty":1}],"cost":0,"rrp":10,"type":"Granita"},{"name":"Speedball","ingredients":[],"cost":10,"rrp":12,"type":"Snack"},{"name":"Centillionaire Shortbread","ingredients":[],"cost":10,"rrp":12,"type":"Snack"},{"name":"Shock & Awe Financier","ingredients":[],"cost":10,"rrp":12,"type":"Snack"},{"name":"Bullet Times","ingredients":[],"cost":10,"rrp":12,"type":"Snack"},{"name":"Frosted Cronuts","ingredients":[],"cost":10,"rrp":12,"type":"Snack"},{"name":"Top Hole","ingredients":[],"cost":10,"rrp":12,"type":"Snack"},{"name":"eCola","ingredients":[],"cost":10,"rrp":50,"type":"Forbidden"},{"name":"eCola Light","ingredients":[],"cost":10,"rrp":50,"type":"Forbidden"},{"name":"Sprunk","ingredients":[],"cost":10,"rrp":50,"type":"Forbidden"},{"name":"Sprunk Light","ingredients":[],"cost":10,"rrp":50,"type":"Forbidden"}];
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
+            var _products = [{"name":"Midnight Run","ingredients":[{"name":"Coffee Beans","qty":1}],"cost":0,"rrp":10,"type":"Coffee"},{"name":"Pale Imitation","ingredients":[{"name":"Coffee Beans","qty":2},{"name":"Milk","qty":1},{"name":"Liquid Whitener","qty":1}],"cost":0,"rrp":15,"type":"Coffee"},{"name":"Whiter Shade of Pale","ingredients":[{"name":"Coffee Beans","qty":2},{"name":"Milk","qty":3},{"name":"Liquid Whitener","qty":2}],"cost":0,"rrp":15,"type":"Coffee"},{"name":"Mochary of Justice","ingredients":[{"name":"Coffee Beans","qty":2},{"name":"Milk","qty":1},{"name":"Cocoa Powder","qty":1}],"cost":0,"rrp":15,"type":"Coffee"},{"name":"Ex-presso","ingredients":[{"name":"Coffee Beans","qty":2},{"name":"Bottle of Water","qty":2}],"cost":0,"rrp":10,"type":"Coffee"},{"name":"Shot in the Dark","ingredients":[{"name":"Kopi Luwak Beans","qty":1},{"name":"Gunpowder","qty":1}],"cost":0,"rrp":25,"type":"Premium Coffee"},{"name":"Deja Brew","ingredients":[{"name":"Kopi Luwak Beans","qty":2},{"name":"Milk","qty":1},{"name":"Cocoa Powder","qty":1}],"cost":0,"rrp":25,"type":"Premium Coffee"},{"name":"Frighter Shade of Pale","ingredients":[{"name":"Coffee Beans","qty":2},{"name":"Milk","qty":1},{"name":"Pumpkin","qty":1}],"cost":0,"rrp":15,"type":"Seasonal Coffee"},{"name":"Cold Catalyst","ingredients":[{"name":"Coffee Beans","qty":1},{"name":"Sugar","qty":1},{"name":"Bottle of Water","qty":1}],"cost":0,"rrp":10,"type":"Granita"},{"name":"You Do Yuzu","ingredients":[{"name":"Yuzu","qty":1},{"name":"Sugar","qty":1},{"name":"Bottle of Water","qty":1}],"cost":0,"rrp":10,"type":"Granita"},{"name":"Speedball","ingredients":[],"cost":10,"rrp":12,"type":"Snack"},{"name":"Centillionaire Shortbread","ingredients":[],"cost":10,"rrp":12,"type":"Snack"},{"name":"Shock & Awe Financier","ingredients":[],"cost":10,"rrp":12,"type":"Snack"},{"name":"Bullet Times","ingredients":[],"cost":10,"rrp":12,"type":"Snack"},{"name":"Frosted Cronuts","ingredients":[],"cost":10,"rrp":12,"type":"Snack"},{"name":"Top Hole","ingredients":[],"cost":10,"rrp":12,"type":"Snack"},{"name":"eCola","ingredients":[],"cost":10,"rrp":50,"type":"Forbidden"},{"name":"eCola Light","ingredients":[],"cost":10,"rrp":50,"type":"Forbidden"},{"name":"Sprunk","ingredients":[],"cost":10,"rrp":50,"type":"Forbidden"},{"name":"Sprunk Light","ingredients":[],"cost":10,"rrp":50,"type":"Forbidden"}];
 
-            
-                
-                
-                
-            
             var _ingredients = [{"name":"Coffee Beans","cost":0},{"name":"Kopi Luwak Beans","cost":0},{"name":"Sugar","cost":0},{"name":"Milk","cost":0},{"name":"Liquid Whitener","cost":0},{"name":"Bottle of Water","cost":0},{"name":"Gunpowder","cost":0},{"name":"Cocoa Powder","cost":0},{"name":"Yuzu","cost":0},{"name":"Pumpkin","cost":0}];
             var _taxRate = 0.0999;
 
@@ -99,7 +74,7 @@
                 else
                 {
                     var foundItem = _order.products.find( item => (item.product.name == productName) );
-                    if( foundItem ) {                   
+                    if( foundItem ) {
                         foundItem.qty = Number(newQty);
                         updateOrder();
                     }
@@ -112,40 +87,35 @@
                 while (orderList.lastElementChild) {
                     orderList.removeChild(orderList.lastElementChild);
                 }
-                
+
                 for( var i = 0; i < order.products.length; ++i )
                 {
-                    var rowDiv = document.createElement("div");
-                    rowDiv.className = "row";
+                    var rowDiv = document.createElement("li");
+                    rowDiv.className = "order-list-row";
                     orderList.appendChild(rowDiv);
 
                     var nameDiv = document.createElement("div");
-                    nameDiv.className = "col";
+                    nameDiv.className = "";
                     nameDiv.textContent = order.products[i].product.name;
                     rowDiv.appendChild(nameDiv);
 
-                    var qtyDiv = document.createElement("div");
-                    qtyDiv.className = "col-sm";
-                    
                     var qtyInput = document.createElement("input");
                     qtyInput.setAttribute("type", "number");
                     qtyInput.id = getOrderItemQtyId(order.products[i].product.name);
+                    qtyInput.className = "item-order-qty";
                     qtyInput.name = order.products[i].product.name;
                     qtyInput.value = Number(order.products[i].qty);
                     qtyInput.onchange = function(e) { changeOrderItemQuantity(e.target.name, Number(e.target.value)); }
-                    qtyDiv.appendChild(qtyInput);
-                    
-                    rowDiv.appendChild(qtyDiv);
+                    rowDiv.appendChild(qtyInput);
 
-                    var deleteDiv = document.createElement("div");
-                    deleteDiv.className = "col-sm";
+                    var buttonParent = document.createElement("div");
+                    buttonParent.className = "btn-parent";
                     var button = document.createElement("button");
-                    button.textContent = "Remove";
-                    button.classList.add("btn", "btn-outline-danger");
+                    button.classList.add("btn-remove");
                     button.value = i;
                     button.onclick = function() { removeFromOrder(this.value); };
-                    deleteDiv.appendChild(button);
-                    rowDiv.appendChild(deleteDiv); 
+                    rowDiv.appendChild(buttonParent);
+                    buttonParent.appendChild(button);
                 }
             }
 
@@ -155,7 +125,7 @@
                 while (ingredientsList.lastElementChild) {
                     ingredientsList.removeChild(ingredientsList.lastElementChild);
                 }
-                
+
                 for( var i = 0; i < order.ingredients.length; ++i )
                 {
                     var rowDiv = document.createElement("div");
@@ -183,17 +153,7 @@
                 if( productQuantity <= 0 ) { return; }
                 var itemToAdd = { "product": _products[productIndex], "qty":productQuantity }
 
-                
-                
-                
-                
-                
                   _order.products.push( itemToAdd );
-                
-                
-                
-                
-                
 
                 updateOrder();
             }
@@ -225,7 +185,7 @@
 
             function updateOrderDetails(order)
             {
-                document.getElementById("orderCost").innerHTML = order.cost;
+                // document.getElementById("orderCost").innerHTML = order.cost;
                 document.getElementById("orderRrp").innerHTML = order.rrp;
                 document.getElementById("orderCharge").value = order.rrp;
             }
@@ -259,7 +219,7 @@
                 _order.charge = document.getElementById("orderCharge").value;
                 _order.tax = Math.floor(_taxRate * _order.charge);
                 _order.net = _order.charge - _order.tax;
-                
+
                               }
               else
               {
@@ -276,10 +236,10 @@
                 var productQuantity = 1;
                 var itemToAdd = { "product": foundProduct, "qty":productQuantity }
 
-                
+
                 var foundIndex = _order.products.findIndex( item => (item.product.name == foundProduct.name) );
                 if( foundIndex < 0 ) {
-                    
+
                     _order.products.push( itemToAdd );
                 }
                 else {
@@ -290,24 +250,33 @@
 
             function applyStyle(productElement, productType)
             {
-                productElement.classList.add("btn", "col");
+                productElement.classList.add("btn-product");
 
                 switch( productType )
                 {
                     case "Coffee":
-                        productElement.classList.add("btn", "col", "btn-outline-success");
+                        // productElement.classList.add("btn", "col", "btn-outline-success");
+                        productElement.classList.add("btn--coffee");
                         break;
                     case "Premium Coffee":
-                        productElement.classList.add("btn", "col", "btn-outline-warning");
+                        // productElement.classList.add("btn", "col", "btn-outline-warning");
+                        productElement.classList.add("btn--premium-coffee");
                         break;
                     case "Granita":
-                        productElement.classList.add("btn", "col", "btn-outline-primary");
+                        // productElement.classList.add("btn", "col", "btn-outline-primary");
+                        productElement.classList.add("btn--granita");
                         break;
                     case "Snack":
-                        productElement.classList.add("btn", "col", "btn-outline-info");
+                        // productElement.classList.add("btn", "col", "btn-outline-info");
+                        productElement.classList.add("btn--snack");
                         break;
                     case "Forbidden":
-                        productElement.classList.add("btn", "col", "btn-outline-danger");
+                        // productElement.classList.add("btn", "col", "btn-outline-danger");
+                        productElement.classList.add("btn--forbidden");
+                        break;
+                    case "Seasonal Coffee":
+                        // productElement.classList.add("btn", "col", "btn-outline-danger");
+                        productElement.classList.add("btn--seasonal-coffee");
                         break;
                 }
             }
@@ -332,44 +301,26 @@
             function onLoad()
             {
                 addProductSelectionGrid(_products);
-              
+
             }
         </script>
   </head>
-  <body onload="onLoad()">
-        <div class="container border">
-            <div class="row">
-                <div class="col">
-                    <div class="row" id="productSelectionGrid"></div>
+    <body onload="onLoad()">
+        <div id="epos-container">
+            <div id="products-and-ingredients">
+                <div id="productSelectionGrid"></div>
+                <div id="ingredients-panel">
+                    <div>Ingredients Required:</div>
+                    <div id="ingredientsList"></div>
                 </div>
+            </div>
 
-                <div class="col">
-                    
-
-                
-                    <div class="row">Order Contents:</div>
-                    <div class="container border">
-                        <div class="row" id="orderList"></div>
-                    </div>
-
-                
-                    <div class="row">
-                    
-                        <div class="col">
-                            <div class="row">Ingredients Required:</div>
-                            <div class="container border" id="ingredientsList"></div>
-                        </div>
-                    
-                        <div class="col border">
-                            <div class="row"><div class="col">Cost: </div><div class="col" id="orderCost"></div></div>
-                            <div class="row"><div class="col">RRP: </div><div class="col" id="orderRrp"></div></div>
-                            <div class="row"><div class="col">Charge: </div><div class="col"><input type="number" id="orderCharge" min="0" /></div></div>
-                            <div class="row">
-                                <div class="col">Orders can only be submitted via Spreadsheet form</div>                                
-                                
-                            </div>
-                        </div>
-                    </div>
+            <div class="order-contents">
+                <div>Order Contents:</div>
+                <ul id="orderList"></ul>
+                <div class="order-totals">
+                    <label for="orderRrp">Total RRP: </label><div id="orderRrp"></div><div>&nbsp;</div>
+                    <label for="orderCharge">Charge: </label><input type="number" id="orderCharge" min="0" /><div>&nbsp;</div>
                 </div>
             </div>
         </div>
