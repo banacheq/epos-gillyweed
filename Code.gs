@@ -160,7 +160,7 @@ function getProducts()
     for( var rowIndex=0; rowIndex < valueGrid.length; ++rowIndex )
     {
       if( valueGrid[rowIndex][0] == "" ) { break; }
-      products.push( { "name": valueGrid[rowIndex][0], "ingredients": parseIngredients(valueGrid[rowIndex][1]), "cost": Number(valueGrid[rowIndex][2]), "rrp": Number(valueGrid[rowIndex][3]) } );
+      products.push( { "name": valueGrid[rowIndex][0], "ingredients": parseIngredients(valueGrid[rowIndex][1]), "cost": Number(valueGrid[rowIndex][2]), "rrp": Number(valueGrid[rowIndex][3]), "type": valueGrid[rowIndex][4] } );
     }
   }
 
@@ -199,7 +199,27 @@ function getTax()
   return 0
 }
 
-function instantiateTemplate(filename, allowSubmit)
+function instantiateStyleTemplate(filename, removeImage, standalone)
+{
+    var styleTemplate = HtmlService.createTemplateFromFile(filename);
+    if( styleTemplate )
+    {
+      if( standalone )
+      {
+        styleTemplate.removeImage = "'x-mark.svg'";
+      }
+      else
+      {
+        styleTemplate.removeImage = "'data:image/svg+xml;base64," + Utilities.base64EncodeWebSafe(HtmlService.createHtmlOutputFromFile(removeImage).getContent()) + "'"
+      }
+
+      return styleTemplate.evaluate();
+    }
+
+    return null;
+}
+
+function instantiateTemplate(filename, style, removeImage, standalone)
 {
   var template = HtmlService.createTemplateFromFile(filename);
   template.ingredientsDataFromServer = getIngredients();
@@ -208,13 +228,17 @@ function instantiateTemplate(filename, allowSubmit)
   console.log(JSON.stringify(template.productsDataFromServer));
   template.taxRateFromServer = getTax();
   console.log(JSON.stringify(template.taxRateFromServer));
-  if( allowSubmit )
+  if( !standalone )
   {
+    var styleOutput = instantiateStyleTemplate(style, removeImage, standalone);
+    template.style = "<style>" + styleOutput.getContent() + "</style>";
+
     template.submitOrder="google.script.run.withSuccessHandler(function(){ google.script.host.close(); }).submitOrder(_order);";
     template.confirmButton = "<div class=\"col\"><button class=\"btn btn-outline-success\" onclick=\"confirmOrder()\" >Confirm</button></div>";
   }
   else
   {
+    template.style = "    <link href=\"style.css\" rel=\"stylesheet\">";
     template.submitOrder="";
     template.confirmButton = "<div class=\"col\">Orders can only be submitted via Spreadsheet form</div>";
   }
@@ -222,24 +246,88 @@ function instantiateTemplate(filename, allowSubmit)
 }
 
 function createOrder() {
-  var widget = instantiateTemplate("Order.html", true);
-  widget.setWidth(1000);
-  widget.setHeight(500);
+  var widget = instantiateTemplate("Order.html", "style", "x-mark", false);
+  widget.setWidth(1500);
+  widget.setHeight(800);
   SpreadsheetApp.getUi().showModalDialog(widget, 'Create Order');
 }
 
 function exportTemplateAsDownload(filename)
 {
   // Passing false here disables the templated code that allows the submission of orders to the spreadsheet
-  var htmlOutput = instantiateTemplate(filename, false);
+  var htmlOutput = instantiateTemplate(filename, "style", "x-mark", true);
   ContentService.createTextOutput( htmlOutput.getContent() ).downloadAsFile(filename);
+}
+
+function createOrGetFolder(folderName)
+{
+  console.log("Enumerating folders called '" +folderName+"'");
+  var folders = DriveApp.getFoldersByName(folderName);
+  while( folders.hasNext() )
+  {
+    var folder = folders.next();
+    console.log("Folder found: '" + folder.getName() +"'");
+    if( folder.getName() == folderName )
+    {
+      return folder;
+    }
+  }
+
+  console.log("No folder called '" + folderName +"' found, creating...");
+  return DriveApp.createFolder(folderName);
+}
+
+function getFileInFolder( folder, filename )
+{
+  var filesIter = folder.getFilesByName( filename );
+  while( filesIter.hasNext() )
+  {
+    var file = filesIter.next();
+    if( file.getName() == filename )
+    {
+      return file;
+    }
+  }
+
+  return null;
+}
+
+function createOrOverwriteFileInFolder( folder, filename, content, mimetype )
+{
+  var file = getFileInFolder( folder, filename );
+  if( file )
+  {
+    file.setContent(content);
+    return file;
+  }
+  else
+  {
+    return folder.createFile(filename, content, mimetype);
+  }
 }
 
 function exportStandaloneOrderForm()
 {
-  var file = DriveApp.createFile( "Order.html", instantiateTemplate("Order.html", false).getContent() );
+  var exportFolder = createOrGetFolder("BeanMachine");
+
+  var removeImage = createOrOverwriteFileInFolder(exportFolder, "x-mark.svg", HtmlService.createHtmlOutputFromFile("x-mark").getContent(), "image/svg+xml" );
+  var style = createOrOverwriteFileInFolder(exportFolder, "style.css", instantiateStyleTemplate("style", "x-mark", true).getContent(), "text/css");
+  var orderForm = createOrOverwriteFileInFolder(exportFolder, "Order-standalone.html", instantiateTemplate("Order.html", "style", "x-mark", true).getContent(), "text/html");
+
+  var zipFileBlob = Utilities.zip([orderForm, style, removeImage], exportFolder.getName() + ".zip" );
+
+  var zipFile = getFileInFolder(DriveApp.getRootFolder(), exportFolder.getName() + ".zip" );
+  if( zipFile )
+  {
+    zipFile.getBlob().setBytes( zipFileBlob.getBytes() );
+  }
+  else
+  {
+    zipFile = DriveApp.getRootFolder().createFile(zipFileBlob);
+  }
+
   var htmlOutput = HtmlService
-    .createHtmlOutput("<p><a href=\""+ file.getDownloadUrl() +"\">Download</a></p>")
+    .createHtmlOutput("<p><a href=\""+ zipFile.getDownloadUrl() +"\">Download</a></p>")
     .setTitle('Download');
   SpreadsheetApp.getUi().showSidebar(htmlOutput);
 }
@@ -258,7 +346,7 @@ function doGet(e)
   var exportType = e.parameter.exportType;
   if( exportType == "order" )
   {
-    exportTemplateAsDownload("Order.html");
+    exportTemplateAsDownload("Order-standalone.html");
   }
 
 }
