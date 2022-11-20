@@ -135,7 +135,7 @@
                     qtyInput.name = order.products[i].product.name;
                     qtyInput.value = Number(order.products[i].qty);
                     qtyInput.onchange = function(e) { changeOrderItemQuantity(e.target.name, Number(e.target.value)); }
-                    qtyDiv.appendChild(qtyInput);
+                    rowDiv.appendChild(qtyInput);
                     //qtyDiv.innerText = order.products[i].qty;
 
                     var buttonParent = document.createElement("div");
