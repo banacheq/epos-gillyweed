@@ -124,7 +124,6 @@
                     orderList.appendChild(rowDiv);
 
                     var nameDiv = document.createElement("div");
-                    nameDiv.className = "";
                     nameDiv.textContent = order.products[i].product.name;
                     rowDiv.appendChild(nameDiv);
 
@@ -343,14 +342,14 @@
                     <div id="ingredientsList"></div>
                 </div>
             </div>
-
             <div class="order-contents">
                 <div>Order Contents:</div>
                 <ul id="orderList"></ul>
-                <div class="order-totals">
-                    <label for="orderRrp">Total RRP: </label><div id="orderRrp"></div><div>&nbsp;</div>
-                    <label for="orderCharge">Charge: </label><input type="number" id="orderCharge" min="0" /><div>&nbsp;</div>
-                </div>
+            </div>
+            <div class="order-totals">
+                <label for="orderRrp">Total RRP: </label><div id="orderRrp"></div><div>&nbsp;</div>
+                <label for="orderCharge">Charge: </label><input type="number" id="orderCharge" min="0" /><div>&nbsp;</div>
+            </div>
             </div>
         </div>
     </body>
