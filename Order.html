@@ -141,7 +141,7 @@
                     var buttonParent = document.createElement("div");
                     buttonParent.className = "btn-parent";
                     var button = document.createElement("button");
-                    qtyInput.className = "btn-remove"
+                    button.classList.add("btn-remove");
                     button.value = i;
                     button.onclick = function() { removeFromOrder(this.value); };
                     rowDiv.appendChild(buttonParent);
