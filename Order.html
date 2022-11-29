@@ -54,6 +54,8 @@
                 "net":0
             }
 
+            var closeOnOrderConfirmation = true;
+
             function calculateIngredientsCosts(ingredients)
             {
                 var cost = 0;
@@ -259,7 +261,6 @@
                 _order.charge = document.getElementById("orderCharge").value;
                 _order.tax = Math.floor(_taxRate * _order.charge);
                 _order.net = _order.charge - _order.tax;
-                //google.script.run.withSuccessHandler(function(){ google.script.host.close(); }).submitOrder(_order);
                 <?!= submitOrder ?>
               }
               else
@@ -333,10 +334,27 @@
                 }
             }
 
+            function resetOrder()
+            {
+                _order.products.splice(0, _order.products.length);
+                updateOrder();
+            }
+
             function onLoad()
             {
                 addProductSelectionGrid(_products);
-              //addProductSelection(_products);
+                
+                var confirmButton = document.getElementById("confirmButton");
+                if( confirmButton )
+                {
+                    confirmButton.addEventListener("click", confirmOrder);
+                }
+
+                var closeSetting = document.getElementById("closeSetting");
+                if( closeSetting )
+                {
+                    closeSetting.addEventListener("change", function(){ closeOnOrderConfirmation = !this.checked; });
+                }
             }
         </script>
   </head>

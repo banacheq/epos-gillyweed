@@ -233,8 +233,9 @@ function instantiateTemplate(filename, style, removeImage, standalone)
     var styleOutput = instantiateStyleTemplate(style, removeImage, standalone);
     template.style = "<style>" + styleOutput.getContent() + "</style>";
 
-    template.submitOrder="google.script.run.withSuccessHandler(function(){ google.script.host.close(); }).submitOrder(_order);";
-    template.confirmButton = "<div class=\"col\"><button class=\"btn btn-outline-success\" onclick=\"confirmOrder()\" >Confirm</button></div>";
+    template.submitOrder="google.script.run.withSuccessHandler(function(){ if(closeOnOrderConfirmation){ google.script.host.close(); } else { resetOrder(); } }).submitOrder(_order);";
+    template.confirmButton = "<div class=\"col\"><button id=\"confirmButton\" class=\"btn btn-outline-success\">Confirm</button></div>";
+    //template.confirmButton += "<label for=\"orderCharge\">Keep Open </label><input type=\"checkbox\" id=\"closeSetting\" /><div>&nbsp;</div>";
   }
   else
   {
