@@ -72,7 +72,7 @@
                 var cumulativeRrp = 0;
                 for( var i=0; i < _order.products.length; ++i )
                 {
-                    cumulativeCost += calculateIngredientsCosts(_order.products[i].product.ingredients);
+                    cumulativeCost += calculateIngredientsCosts(_order.products[i].product.ingredients) * _order.products[i].qty;
                     cumulativeCost += _order.products[i].product.cost * _order.products[i].qty;
                     cumulativeRrp += _order.products[i].product.rrp * _order.products[i].qty;
                 }
@@ -227,7 +227,7 @@
 
             function updateOrderDetails(order)
             {
-                // document.getElementById("orderCost").innerHTML = order.cost;
+                document.getElementById("orderCost").innerHTML = order.cost;
                 document.getElementById("orderRrp").innerHTML = order.rrp;
                 document.getElementById("orderCharge").value = order.rrp;
             }
@@ -371,6 +371,7 @@
             <div>Order Contents:</div>
             <ul id="orderList"></ul>
             <div class="order-totals">
+                <label for="orderCost">Total Cost: </label><div id="orderCost"></div><div>&nbsp;</div>
                 <label for="orderRrp">Total RRP: </label><div id="orderRrp"></div><div>&nbsp;</div>
                 <label for="orderCharge">Charge: </label><input type="number" id="orderCharge" min="0" /><div>&nbsp;</div>
                 <div>
