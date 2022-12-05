@@ -1,3 +1,4 @@
+/**
 function onEdit(e) {
   handleEdit(e)
 }
@@ -36,9 +37,9 @@ function handleEdit(e)
         finalResult = replaceValue;
         activeCell.setValue(finalResult);
 
-        /*var quantity = Number(match[1])+1;
+        //var quantity = Number(match[1])+1;
         //replaceValue.replace( match[0], newValue + ":" + (quantity + 1) );
-        activeCell.setValue(oldValue.replace( match[0], newValue + ":" + (quantity + 1) ));*/
+        //activeCell.setValue(oldValue.replace( match[0], newValue + ":" + (quantity + 1) ));
       }
     }
   }
@@ -49,6 +50,7 @@ function handleEdit(e)
     activeCell.setValue("Select Function Here");
   }
 }
+ */
 
 function getRole()
 {
@@ -196,7 +198,7 @@ function getTax()
     }
   }
 
-  return 0
+  return 0;
 }
 
 function instantiateStyleTemplate(filename, removeImage, standalone)
