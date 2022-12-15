@@ -186,6 +186,24 @@ function getIngredients()
   return ingredients;
 }
 
+function SUMINGREDIENTCOST( ingredientList )
+{
+  var ingredientCosts = getIngredients();
+  var ingredients = parseIngredients(ingredientList);
+
+  var cost = 0;
+  for( var index = 0; index < ingredients.length; ++index )
+  {
+    var ingredientDef = ingredientCosts.find( value => value.name == ingredients[index].name );
+    if( ingredientDef )
+    {
+      cost += ingredientDef.cost * ingredients[index].qty;
+    }
+  }
+
+  return cost;
+}
+
 function getTax()
 {
   var taxRange = SpreadsheetApp.getActiveSpreadsheet().getRangeByName("TaxRate");
@@ -198,7 +216,7 @@ function getTax()
     }
   }
 
-  return 0;
+  return 0
 }
 
 function instantiateStyleTemplate(filename, removeImage, standalone)
@@ -237,7 +255,7 @@ function instantiateTemplate(filename, style, removeImage, standalone)
 
     template.submitOrder="google.script.run.withSuccessHandler(function(){ if(closeOnOrderConfirmation){ google.script.host.close(); } else { resetOrder(); } }).submitOrder(_order);";
     template.confirmButton = "<div class=\"col\"><button id=\"confirmButton\" class=\"btn btn-outline-success\">Confirm</button></div>";
-    //template.confirmButton += "<label for=\"orderCharge\">Keep Open </label><input type=\"checkbox\" id=\"closeSetting\" /><div>&nbsp;</div>";
+    //template.confirmButton += "<label for=\"closeSetting\">Keep Open </label><input type=\"checkbox\" id=\"closeSetting\" name=\"closeSetting\" /><div>&nbsp;</div>";
   }
   else
   {
@@ -322,9 +340,10 @@ function exportStandaloneOrderForm()
   var zipFile = getFileInFolder(DriveApp.getRootFolder(), exportFolder.getName() + ".zip" );
   if( zipFile )
   {
+    DriveApp.getRootFolder().removeFile(zipFile);
     zipFile.getBlob().setBytes( zipFileBlob.getBytes() );
   }
-  else
+
   {
     zipFile = DriveApp.getRootFolder().createFile(zipFileBlob);
   }
