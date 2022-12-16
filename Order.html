@@ -43,6 +43,7 @@
             //]
             var _ingredients = <?!= JSON.stringify(ingredientsDataFromServer) ?>;
             var _taxRate = <?!= JSON.stringify(taxRateFromServer) ?>;
+            var _discount = <?!= JSON.stringify(discountFromServer) ?>;
 
             var _order = {
                 "products": [],
@@ -51,10 +52,12 @@
                 "rrp":0,
                 "charge":0,
                 "tax":0,
-                "net":0
+                "net":0,
+                "profit":0
             }
 
             var closeOnOrderConfirmation = true;
+            var discountApplied = false;
 
             function calculateIngredientsCosts(ingredients)
             {
@@ -78,7 +81,12 @@
                 }
 
                 _order.cost = cumulativeCost;
-                _order.rrp = cumulativeRrp;
+                _order.rrp = cumulativeRrp; 
+                _order.charge = _order.rrp;
+                if( discountApplied )
+                {
+                  _order.charge -= Math.ceil(_order.rrp * _discount);
+                }
             }
 
             function removeFromOrder(productIndex)
@@ -229,7 +237,7 @@
             {
                 document.getElementById("orderCost").innerHTML = order.cost;
                 document.getElementById("orderRrp").innerHTML = order.rrp;
-                document.getElementById("orderCharge").value = order.rrp;
+                document.getElementById("orderCharge").value = order.charge;
             }
 
             function updateOrder()
@@ -261,6 +269,7 @@
                 _order.charge = document.getElementById("orderCharge").value;
                 _order.tax = Math.floor(_taxRate * _order.charge);
                 _order.net = _order.charge - _order.tax;
+                _order.profit = _order.net - _order.cost;
                 <?!= submitOrder ?>
               }
               else
@@ -355,6 +364,13 @@
                 {
                     closeSetting.addEventListener("change", function(){ closeOnOrderConfirmation = !this.checked; });
                 }
+
+                var discountSetting = document.getElementById('discountSetting');
+                if( discountSetting )
+                {
+                  discountSetting.checked = discountApplied;
+                  discountSetting.addEventListener("change", function(){ discountApplied = this.checked; updateOrder(); });
+                }
             }
         </script>
   </head>
@@ -374,6 +390,7 @@
                 <label for="orderCost">Total Cost: </label><div id="orderCost"></div><div>&nbsp;</div>
                 <label for="orderRrp">Total RRP: </label><div id="orderRrp"></div><div>&nbsp;</div>
                 <label for="orderCharge">Charge: </label><input type="number" id="orderCharge" min="0" /><div>&nbsp;</div>
+                <!--<label for="discountSetting">Apply Discount? </label><input type="checkbox" id="discountSetting" /><div>&nbsp;</div>-->
                 <div>
                     <?!= confirmButton ?>
                 </div>

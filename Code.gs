@@ -219,6 +219,21 @@ function getTax()
   return 0
 }
 
+function getDiscount()
+{
+  var discountRange = SpreadsheetApp.getActiveSpreadsheet().getRangeByName("Discount");
+  if( discountRange )
+  {
+    var discountCell = discountRange.getCell(1,1);
+    if( !discountCell.isBlank() )
+    {
+      return Number(discountCell.getValue());
+    }
+  }
+
+  return 0
+}
+
 function instantiateStyleTemplate(filename, removeImage, standalone)
 {
     var styleTemplate = HtmlService.createTemplateFromFile(filename);
@@ -248,6 +263,7 @@ function instantiateTemplate(filename, style, removeImage, standalone)
   console.log(JSON.stringify(template.productsDataFromServer));
   template.taxRateFromServer = getTax();
   console.log(JSON.stringify(template.taxRateFromServer));
+  template.discountFromServer = getDiscount();
   if( !standalone )
   {
     var styleOutput = instantiateStyleTemplate(style, removeImage, standalone);
@@ -360,7 +376,7 @@ function submitOrder(order)
   var orderId = new Date().valueOf();
   var products = order.products.map( (product) => product.product.name + ":" + product.qty ).join(", ");
   console.log("Order submitted: " + orderId + products + order.cost + order.rrp + order.charge );
-  sheet.appendRow([orderId, new Date(), getRole(), products, order.cost, order.rrp, order.charge, order.tax, order.net]);
+  sheet.appendRow([orderId, new Date(), getRole(), products, order.cost, order.rrp, order.charge, order.tax, order.net, order.profit]);
 }
 
 function doGet(e)
