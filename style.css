@@ -1,4 +1,4 @@
-/***
+/*** sdfsdfsfsfsd
     The new CSS reset - version 1.7.3 (last updated 7.8.2022)
     GitHub page: https://github.com/elad2412/the-new-css-reset
 ***/
@@ -206,9 +206,41 @@ body {
   cursor: pointer;
   width: 0.85em;
   height: 0.85em;
-  background-image: url(<?!= removeImage ?>);
+  background-image: url('x-mark.svg');
   background-repeat: no-repeat;
   background-position: center;
   background-size: 0.375em;
 }
 
+input[type='checkbox'] {
+    position: relative; 
+    height: 30px; width: 30px; 
+
+}
+
+input[type=checkbox]:before {
+    content: "";
+    display: block;
+    position: relative;
+    width: 32px;
+    height: 32px;
+    top: 0;
+    left: 0;
+    border: 3px solid #D4C045;
+    border-radius: 3px;
+    background-color: transparent;
+}
+input[type=checkbox]:checked:after {
+    content: "";
+    display: block;
+    width: 10px;
+    height: 20px;
+    border: solid #D4C045;
+    border-width: 0 4px 4px 0;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+    position: absolute;
+    top: 4px;
+    left: 12px;
+}

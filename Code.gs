@@ -270,8 +270,8 @@ function instantiateTemplate(filename, style, removeImage, standalone)
     template.style = "<style>" + styleOutput.getContent() + "</style>";
 
     template.submitOrder="google.script.run.withSuccessHandler(function(){ if(closeOnOrderConfirmation){ google.script.host.close(); } else { resetOrder(); } }).submitOrder(_order);";
-    template.confirmButton = "<div class=\"col\"><button id=\"confirmButton\" class=\"btn btn-outline-success\">Confirm</button></div>";
-    //template.confirmButton += "<label for=\"closeSetting\">Keep Open </label><input type=\"checkbox\" id=\"closeSetting\" name=\"closeSetting\" /><div>&nbsp;</div>";
+    template.confirmButton = "<label for=\"closeSetting\">Keep Open </label><input type=\"checkbox\" id=\"closeSetting\" name=\"closeSetting\"/><div>&nbsp;</div>";
+    template.confirmButton += "<div><div class=\"col\"><button id=\"confirmButton\" class=\"btn btn-outline-success\">Confirm</button></div></div>";
   }
   else
   {
@@ -386,5 +386,4 @@ function doGet(e)
   {
     exportTemplateAsDownload("Order-standalone.html");
   }
-
 }
