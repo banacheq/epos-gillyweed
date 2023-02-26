@@ -206,7 +206,7 @@ body {
   cursor: pointer;
   width: 0.85em;
   height: 0.85em;
-  background-image: url('x-mark.svg');
+  background-image: url(<?!= removeImage ?>);
   background-repeat: no-repeat;
   background-position: center;
   background-size: 0.375em;
