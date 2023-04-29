@@ -349,7 +349,7 @@ function exportStandaloneOrderForm()
 
   var removeImage = createOrOverwriteFileInFolder(exportFolder, "x-mark.svg", HtmlService.createHtmlOutputFromFile("x-mark").getContent(), "image/svg+xml" );
   var style = createOrOverwriteFileInFolder(exportFolder, "style.css", instantiateStyleTemplate("style", "x-mark", true).getContent(), "text/css");
-  var orderForm = createOrOverwriteFileInFolder(exportFolder, "Order-standalone.html", instantiateTemplate("Order.html", "style", "x-mark", true).getContent(), "text/html");
+  var orderForm = createOrOverwriteFileInFolder(exportFolder, "index.html", instantiateTemplate("Order.html", "style", "x-mark", true).getContent(), "text/html");
 
   var zipFileBlob = Utilities.zip([orderForm, style, removeImage], exportFolder.getName() + ".zip" );
 
