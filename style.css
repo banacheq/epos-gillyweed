@@ -1,4 +1,4 @@
-/*** sdfsdfsfsfsd
+/***
     The new CSS reset - version 1.7.3 (last updated 7.8.2022)
     GitHub page: https://github.com/elad2412/the-new-css-reset
 ***/
@@ -82,18 +82,40 @@ meter {
     -webkit-user-drag: element;
 }
 
+:root {
+--primary-font-color: #D4C045;
+--border-color: #D4C045;
+--drink-bg-color: #452f10;
+--food-bg-color: #4E5E4F;
+--product-dark-text-color: #152F33;
+--textbox-bg-color: #152F33;
+}
+
 body {
   font-family: 'Bebas Neue', cursive;
   background-color: #0B191B;
-  letter-spacing: 0.1em;
-  font-size: 20px
+  letter-spacing: 0.1rem;
+  font-size: 18px;
+  padding: 1rem;
+  color: var(--primary-font-color);
+}
+
+#logo-container {
+    display: flex;
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    align-items: center;
+}
+
+#logo-container img {
+    max-width: 64px;
+    margin-right: 1rem;
 }
 
 #epos-container {
     display: flex;
-    flex: 0 1 auto;
-    margin: 1em;
     gap: 1em;
+    max-width: 1024px;
 }
 
 #products-and-ingredients {
@@ -103,26 +125,81 @@ body {
     gap: 1em;
 }
 
-#productSelectionGrid {
+#product-selection-grid {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
     gap: 0.5em;
-    border: 1px solid white;
-    padding: 1em;
+}
+
+
+#order-contents {
+    flex-grow: 2;
+}
+
+h2 {
+    font-size: 1.5rem
+}
+
+#product-selection-grid, #order-contents, #ingredients-panel {
+  color: var(--primary-font-color);
+  border: 1px solid #D4C045;
+  padding: 1rem;
+}
+
+#ingredients-list li {
+    display: flex;
+    font-size: 0.9rem;
+}
+
+#order-list {
+    padding-left: 0;
+    padding-bottom: 0.25em;
+}
+
+#order-cost, #order-rrp {
+    padding-left: 0.275em;
+}
+
+#order-list li {
+    display: grid;
+    grid-template-columns: 2.75fr 0.5fr 0.25fr;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 0.75em;
+    margin-bottom: 0.275rem;
+}
+
+.order-totals {
+    border-top: 1px solid #D4C045;
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 0.25fr;
+    padding-top: 0.75em;
+}
+
+.item-order-qty, #order-charge {
+    border: 1.5px solid var(--border-color);
+    padding: 0.1rem 0.1rem 0.1rem 0.325rem;
+    background-color: #152F33;
+    max-width: 86px;
+}
+
+.order-list-row {
+  display: flex;
 }
 
 .btn-product {
-  color: #EEEEEE;
-  border-radius: 5px;
-  width: 130px;
-  min-height: 3.5em;
-  text-align: center;
-  line-height: 1.25em;
-  padding: 0 0.25em;
+    color: #EEEEEE;
+    border-radius: 5px;
+    width: 110px;
+    min-height: 3.5rem;
+    text-align: center;
+    line-height: 1.25rem;
+    padding: 0 0.25em;
+    font-size: 0.9rem;
 }
 
 .btn--coffee {
-  background-color: #452f10;
+  background-color: var(--drink-bg-color);
 }
 
 .btn--premium-coffee {
@@ -130,7 +207,7 @@ body {
 }
 
 .btn--snack {
-  background-color: #4E5E4F;
+  background-color: var(--food-bg-color);
 }
 
 .btn--granita {
@@ -142,50 +219,29 @@ body {
   background-color: #612823;
 }
 
-.btn--seasonal-coffee {
+.btn--spring-special {
+    background-color: #4EC979;
+}
+
+.btn--summer-special {
+    background-color: #e2d688;
+}
+
+.btn--fall-special {
   background-color: orange;
 }
 
-#productSelectionGrid, .order-contents, #ingredients-panel {
-  color: #D4C045;
-  border: 1px solid #D4C045;
-  padding: 1em;
+.btn--winter-special {
+    background-color: #dcf4f4;
 }
 
-#orderList {
-    padding-left: 0;
-    padding-bottom: 0.25em;
-}
-
-#orderRrp {
-    padding-left: 0.275em;
-}
-
-#orderList li {
-    display: grid;
-    grid-template-columns: 1.5fr 1fr 0.25fr;
-    align-items: center;
-    justify-content: flex-start;
-    gap: 0.75em;
-    margin-bottom: 0.2em;
-}
-
-.order-totals {
-    border-top: 1px solid #D4C045;
-    display: grid;
-    grid-template-columns: 1.5fr 1fr 0.25fr;
-    padding-top: 0.75em;
-}
-
-.item-order-qty, #orderCharge {
-    border: 1.5px solid #D4C045;
-    color: #D4C045;
-    padding-left: 0.275em;
-    background-color: #152F33;
-}
-
-.order-list-row {
-  display: flex;
+.btn--spring-special,
+.btn--summer-special,
+.btn--fall-special,
+.btn--winter-special,
+.btn--granita {
+    color: var(--product-dark-text-color);
+    font-weight: 600;
 }
 
 .btn-parent {
@@ -202,7 +258,7 @@ body {
   text-align: center;
   text-decoration: none;
   display: inline-block;
-  font-size: 2em;
+  font-size: 2rem;
   cursor: pointer;
   width: 0.85em;
   height: 0.85em;
@@ -226,7 +282,7 @@ input[type=checkbox]:before {
     height: 32px;
     top: 0;
     left: 0;
-    border: 3px solid #D4C045;
+    border: 3px solid var(--border-color);
     border-radius: 3px;
     background-color: transparent;
 }
@@ -235,7 +291,7 @@ input[type=checkbox]:checked:after {
     display: block;
     width: 10px;
     height: 20px;
-    border: solid #D4C045;
+    border: solid var(--border-color);
     border-width: 0 4px 4px 0;
     -webkit-transform: rotate(45deg);
     -ms-transform: rotate(45deg);
@@ -243,4 +299,12 @@ input[type=checkbox]:checked:after {
     position: absolute;
     top: 4px;
     left: 12px;
+}
+
+.totals-label {
+    grid-column: 1;
+}
+
+.totals-input {
+    grid-column: 2;
 }

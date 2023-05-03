@@ -123,7 +123,7 @@
 
             function regenerateOrderList(order)
             {
-                var orderList = document.getElementById("orderList");
+                var orderList = document.getElementById("order-list");
                 while (orderList.lastElementChild) {
                     orderList.removeChild(orderList.lastElementChild);
                 }
@@ -146,64 +146,40 @@
                     qtyInput.value = Number(order.products[i].qty);
                     qtyInput.onchange = function(e) { changeOrderItemQuantity(e.target.name, Number(e.target.value)); }
                     rowDiv.appendChild(qtyInput);
-                    //qtyDiv.innerText = order.products[i].qty;
 
-                    var buttonParent = document.createElement("div");
-                    buttonParent.className = "btn-parent";
                     var button = document.createElement("button");
                     button.classList.add("btn-remove");
                     button.value = i;
                     button.onclick = function() { removeFromOrder(this.value); };
-                    rowDiv.appendChild(buttonParent);
-                    buttonParent.appendChild(button);
+                    rowDiv.appendChild(button);
                 }
             }
 
             function regenerateIngredientsList(order)
             {
-                var ingredientsList = document.getElementById("ingredientsList");
+                var ingredientsList = document.getElementById("ingredients-list");
                 while (ingredientsList.lastElementChild) {
                     ingredientsList.removeChild(ingredientsList.lastElementChild);
                 }
 
                 for( var i = 0; i < order.ingredients.length; ++i )
                 {
-                    var rowDiv = document.createElement("div");
-                    rowDiv.className = "row";
-                    ingredientsList.appendChild(rowDiv);
-
-                    var nameDiv = document.createElement("div");
-                    nameDiv.className = "col";
-                    nameDiv.textContent = order.ingredients[i].name;
-                    rowDiv.appendChild(nameDiv);
-
-                    var qtyDiv = document.createElement("div");
-                    qtyDiv.className = "col-sm";
-                    qtyDiv.innerText = order.ingredients[i].qty;
-                    rowDiv.appendChild(qtyDiv);
+                    var ingredientItem = document.createElement("li");
+                    ingredientItem.textContent = "\xa0—\xa0" + order.ingredients[i].name + '\xa0×\xa0' + order.ingredients[i].qty;
+                    ingredientsList.appendChild(ingredientItem);
                 }
             }
 
             function addItem()
             {
-                var productSelection = document.getElementById("productSelection").value;
+                var productSelection = document.getElementById("product-selection").value;
                 if( productSelection == "Select Product" ) { return; }
                 var productIndex = Number(productSelection);
-                var productQuantity = Number(document.getElementById("productQuantity").value);
+                var productQuantity = Number(document.getElementById("product-quantity").value);
                 if( productQuantity <= 0 ) { return; }
                 var itemToAdd = { "product": _products[productIndex], "qty":productQuantity }
 
-                // Test if the item is already in the list of products
-                //var foundIndex = _order.products.findIndex( item => (item.product.name == _products[productIndex].name) );
-                //if( foundIndex < 0 )
-                //{
-                //  // Item was not found, just add it
                   _order.products.push( itemToAdd );
-                //}
-                //else
-                //{
-                //  _order.products[foundIndex].qty += productQuantity;
-                //}
 
                 updateOrder();
             }
@@ -235,9 +211,9 @@
 
             function updateOrderDetails(order)
             {
-                document.getElementById("orderCost").innerHTML = order.cost;
-                document.getElementById("orderRrp").innerHTML = order.rrp;
-                document.getElementById("orderCharge").value = order.charge;
+                document.getElementById("order-cost").innerHTML = order.cost;
+                document.getElementById("order-rrp").innerHTML = order.rrp;
+                document.getElementById("order-charge").value = order.charge;
             }
 
             function updateOrder()
@@ -251,7 +227,7 @@
 
             function addProductSelection(products)
             {
-                var selection = document.getElementById("productSelection");
+                var selection = document.getElementById("product-selection");
 
                 for( var i=0; i < products.length; ++i )
                 {
@@ -266,7 +242,7 @@
             {
               if( _order.products.length > 0 )
               {
-                _order.charge = document.getElementById("orderCharge").value;
+                _order.charge = document.getElementById("order-charge").value;
                 _order.tax = Math.floor(_taxRate * _order.charge);
                 _order.net = _order.charge - _order.tax;
                 _order.profit = _order.net - _order.cost;
@@ -320,15 +296,24 @@
                     case "Forbidden":
                         productElement.classList.add("btn--forbidden");
                         break;
-                    case "Seasonal Coffee":
-                        productElement.classList.add("btn--seasonal-coffee");
+                    case "Spring Special":
+                        productElement.classList.add("btn--spring-special");
+                        break;
+                    case "Summer Special":
+                        productElement.classList.add("btn--summer-special");
+                        break;
+                    case "Fall Special":
+                        productElement.classList.add("btn--fall-special");
+                        break;
+                    case "Winter Special":
+                        productElement.classList.add("btn--winter-special");
                         break;
                 }
             }
 
             function addProductSelectionGrid(products)
             {
-                var selection = document.getElementById("productSelectionGrid");
+                var selection = document.getElementById("product-selection-grid");
 
                 for( var i=0; i < products.length; ++i )
                 {
@@ -375,23 +360,30 @@
         </script>
   </head>
   <body onload="onLoad()">
+    <div id="logo-container">
+      <h1>Bean Machine EPOS System v2.0</h1>
+    </div>
     <div id="epos-container">
         <div id="products-and-ingredients">
-            <div id="productSelectionGrid"></div>
+            <div id="product-selection-grid"></div>
             <div id="ingredients-panel">
-                <div>Ingredients Required:</div>
-                <div id="ingredientsList"></div>
+                <h2>Ingredients Required:</h2>
+                <ul id="ingredients-list"></ul>
             </div>
         </div>
-        <div class="order-contents">
-            <div>Order Contents:</div>
-            <ul id="orderList"></ul>
+        <div id="order-contents">
+            <h2>Order Contents:</h2>
+            <ul id="order-list"></ul>
             <div class="order-totals">
-                <label for="orderCost">Total Cost: </label><div id="orderCost"></div><div>&nbsp;</div>
-                <label for="orderRrp">Total RRP: </label><div id="orderRrp"></div><div>&nbsp;</div>
-                <label for="orderCharge">Charge: </label><input type="number" id="orderCharge" min="0" /><div>&nbsp;</div>
-                <!--<label for="discountSetting">Apply Discount? </label><input type="checkbox" id="discountSetting" /><div>&nbsp;</div>-->
-                <?!= confirmButton ?>
+                <label for="order-cost" class="totals-label">Total Cost: </label>
+                <div id="order-cost" class="totals-input"></div>
+                <div>&nbsp;</div>
+                <label for="order-rrp" class="totals-label">Total RRP: </label>
+                <div id="order-rrp" class="totals-input"></div>
+                <div>&nbsp;</div>
+                <label for="order-charge" class="totals-label">Charge: </label>
+                <input type="number" class="totals-input" id="order-charge" min="0" />
+                <div>&nbsp;</div>
             </div>
         </div>
     </div>
