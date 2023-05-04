@@ -81,7 +81,7 @@
                 }
 
                 _order.cost = cumulativeCost;
-                _order.rrp = cumulativeRrp; 
+                _order.rrp = cumulativeRrp;
                 _order.charge = _order.rrp;
                 if( discountApplied )
                 {
@@ -337,7 +337,7 @@
             function onLoad()
             {
                 addProductSelectionGrid(_products);
-                
+
                 var confirmButton = document.getElementById("confirmButton");
                 if( confirmButton )
                 {
@@ -384,6 +384,7 @@
                 <label for="order-charge" class="totals-label">Charge: </label>
                 <input type="number" class="totals-input" id="order-charge" min="0" />
                 <div>&nbsp;</div>
+                <?!= confirmButton ?>
             </div>
         </div>
     </div>
