@@ -234,6 +234,21 @@ function getDiscount()
   return 0
 }
 
+function getCommissionRate()
+{
+   var commissionRange = SpreadsheetApp.getActiveSpreadsheet().getRangeByName("CommissionRate");
+  if( commissionRange )
+  {
+    var commissionCell = commissionRange.getCell(1,1);
+    if( !commissionCell.isBlank() )
+    {
+      return Number(commissionCell.getValue());
+    }
+  }
+
+  return 0.0;
+}
+
 function instantiateStyleTemplate(filename, removeImage, standalone)
 {
     var styleTemplate = HtmlService.createTemplateFromFile(filename);
@@ -375,8 +390,9 @@ function submitOrder(order)
   var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Orders");
   var orderId = new Date().valueOf();
   var products = order.products.map( (product) => product.product.name + ":" + product.qty ).join(", ");
+  var commission = Math.floor(order.profit * getCommissionRate());
   console.log("Order submitted: " + orderId + products + order.cost + order.rrp + order.charge );
-  sheet.appendRow([orderId, new Date(), getRole(), products, order.cost, order.rrp, order.charge, order.tax, order.net, order.profit]);
+  sheet.appendRow([orderId, new Date(), getRole(), products, order.cost, order.rrp, order.charge, order.tax, order.net, order.profit, commission]);
 }
 
 function doGet(e)
